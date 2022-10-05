@@ -9,10 +9,11 @@
  * Author:     jjones4
  *
  * Copyright (c) 2022 Jerad Jones
- * This file is part of c_budget.  c_budget may be freely distributed
- * under the MIT license.  For all details and documentation, see
+ * This file is part of c_budget_dynamic_strings.  c_budget_dynamic_strings
+ * may be freely distributed under the MIT license.  For all details and
+ * documentation, see
  
- * https://github.com/jjones4/c_budget
+ * https://github.com/jjones4/c_budget_dynamic_strings
  *
  */
 

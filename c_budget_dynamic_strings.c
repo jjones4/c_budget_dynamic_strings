@@ -1,6 +1,6 @@
 /*
  *
- * Name:       c_budget
+ * Name:       c_budget_dynamic_strings
  *
  * Purpose:    Keep track of a simple budget in a text file.
  *
@@ -15,11 +15,11 @@
  * Author:     jjones4
  *
  * Copyright (c) 2022 Jerad Jones
- * This file is part of c_budget_2d_array.  c_budget_2d_array may be
- * freely distributed under the MIT license.  For all details and
+ * This file is part of c_budget_dynamic_strings.  c_budget_dynamic_strings
+ * may be freely distributed under the MIT license.  For all details and
  * documentation, see
  *
- * https://github.com/jjones4/c_budget_2d_array
+ * https://github.com/jjones4/c_budget_dynamic_strings
  *
  */
 
