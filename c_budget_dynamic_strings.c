@@ -45,7 +45,10 @@
 int main(void)
 {
    FILE *fp;
-   char complete_budget[MAX_TRANSACTIONS][MAX_TRANSACTION_LENGTH + 1] = {0};
+   char *budget[MAX_TRANSACTIONS];
+   char *p;
+   char **c;
+   
    char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1] = {0};
    char main_menu_input_string[MENU_INPUT_LENGTH + 1];
    int number_of_transactions = 0;
@@ -70,6 +73,7 @@ int main(void)
     * reach the max number of transactions. If we can read another transaction,
     * above the max, the file is too large, and we will exit.
     */
+   c = budget;
    while(
       fgets
          (complete_transaction_string, MAX_TRANSACTION_LENGTH + 1, fp) != NULL
@@ -91,14 +95,32 @@ int main(void)
          return EXIT_FAILURE;
       }
       
-      /* Put the current line of the text file into our 2d array */
-      strcpy(complete_budget[number_of_transactions],
-         complete_transaction_string);
-         
+      /* Put a pointer the current line of our text file into our array */
+      p = malloc(strlen(complete_transaction_string) + 1);
+      
+      if(p == NULL)
+      {
+         printf("\nMemory allocation error.\n");
+         return EXIT_FAILURE;
+      }
+      
+      strcpy(p, complete_transaction_string);
+      *c = p;
+      
+      c++;
       number_of_transactions++;
    }
    
    fclose(fp);
+   
+   /* Code for looping through and dereferencing the budget array
+   c = budget;
+   for(i = 0; i < number_of_transactions; i++)
+   {
+      printf("\n%s\n", *c);
+      c++;
+   }
+   */
    
    for( ;; )
    {
@@ -130,8 +152,10 @@ int main(void)
              */
             if(number_of_transactions < MAX_TRANSACTIONS)
             {
+               /*
                number_of_transactions = create_transaction(&number_of_transactions,
                   *complete_budget);
+               */
             }
             else
             {
@@ -142,7 +166,7 @@ int main(void)
          else if(menu_option_to_int == 2)
          {
             number_of_transactions =
-                  read_transactions(&number_of_transactions, *complete_budget);
+               read_transactions(&number_of_transactions, budget);
          }
          else if(menu_option_to_int == 3)
          {
@@ -154,8 +178,10 @@ int main(void)
             }
             else
             {
+               /*
                number_of_transactions =
                   update_transaction(&number_of_transactions, *complete_budget);
+               */
             }
          }
          else if(menu_option_to_int == 4)
@@ -168,8 +194,10 @@ int main(void)
             }
             else
             {
+               /*
                number_of_transactions =
                   delete_transaction(&number_of_transactions, *complete_budget);
+               */
             }
          }
          else if(menu_option_to_int == 5)
