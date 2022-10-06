@@ -35,7 +35,7 @@ char *parse_transaction_string(char *transaction_field, char *complete_transacti
 
 
 
-int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
+int create_transaction(int *number_of_transactions, char **budget)
 {
    FILE *fp;
    char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1] = {0};
@@ -43,6 +43,10 @@ int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    char amount_string[AMOUNT_LENGTH + 1];
    char type_string[TYPE_LENGTH + 1];
    char description_string[DESCRIPTION_LENGTH + 1];
+   
+   char *p;
+   char **c;
+   
    BOOL valid_amount = FALSE, valid_description = FALSE;
    
    /*
@@ -143,19 +147,20 @@ int create_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    strcat(complete_transaction_string, description_string);
    strcat(complete_transaction_string, "|");
    
-   /* Put the new transaction into the 2d array as the last element */
-   strcpy(complete_budget + *number_of_transactions * (MAX_TRANSACTION_LENGTH + 1),
-      complete_transaction_string);
-   
-   /* Hancy code for looping through our 2d array */
-   /*
-   for(j = 0, i = 0; i < (*number_of_transactions + 1) * (MAX_TRANSACTION_LENGTH + 1);)
+   /* Allocate memory for our new transaction */
+   p = malloc(strlen(complete_transaction_string) + 1);
+      
+   if(p == NULL)
    {
-      printf("\nRecord %d: %s\n", *number_of_transactions, complete_budget + i);
-      j++;
-      i += (MAX_TRANSACTION_LENGTH + 1);
+      printf("\nMemory allocation error.\n");
+      return EXIT_FAILURE;
    }
-   */
+      
+   strcpy(p, complete_transaction_string);
+   
+   /* Store the pointer to our new transaction in our budget array */
+   c = budget + *number_of_transactions;
+   *c = p;
    
    /* Write record to budget.txt */
    fprintf(fp, "%s", complete_transaction_string);
@@ -202,7 +207,7 @@ int read_transactions(int *number_of_transactions, char **budget)
 
 
 
-int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
+int update_transaction(int *number_of_transactions, char **budget)
 {
    FILE* temp_pointer;
    char complete_transaction_string[MAX_TRANSACTION_LENGTH + 1];
@@ -214,6 +219,9 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    char description_string[DESCRIPTION_LENGTH + 1];
    char *transaction_string_index;
    
+   char *p;
+   char **c;
+   
    BOOL valid_id = FALSE;
    BOOL valid_date= FALSE;
    BOOL valid_amount = FALSE;
@@ -221,7 +229,7 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    
    int i, id = 0;
    
-   /* (void) read_transactions(number_of_transactions, complete_budget); */
+   (void) read_transactions(number_of_transactions, budget);
    
    do
    {
@@ -253,7 +261,7 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
     * of the ID that the user gave. We will store this lilne
     * in the complete_transaction_string
     */
-   strcpy(complete_transaction_string, complete_budget + ((id - 1) * (MAX_TRANSACTION_LENGTH + 1)));
+   strcpy(complete_transaction_string, *(budget + id - 1));
    
    /* Keep track of our position as we read from the complete_transaction_string array */
    transaction_string_index = complete_transaction_string;
@@ -386,9 +394,20 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
    strcat(complete_transaction_string, description_string);
    strcat(complete_transaction_string, "|");
    
-   /* Put the new transaction into the 2d array as the last element */
-   strcpy(complete_budget + ((id - 1) * (MAX_TRANSACTION_LENGTH + 1)),
-      complete_transaction_string);
+   /* Allocate memory for our new transaction */
+   p = malloc(strlen(complete_transaction_string) + 1);
+      
+   if(p == NULL)
+   {
+      printf("\nMemory allocation error.\n");
+      return EXIT_FAILURE;
+   }
+      
+   strcpy(p, complete_transaction_string);
+   
+   /* Store the pointer to our new transaction in our budget array */
+   c = budget + id - 1;
+   *c = p;
    
    /* Move the new data to a temp file
     * Remove the original file, and rename the temp file
@@ -402,9 +421,11 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
       exit(EXIT_FAILURE);
    }
    
+   c = budget;
    for(i = 0; i < *number_of_transactions; i++)
    {
-      fprintf(temp_pointer, "%s", complete_budget + (i * (MAX_TRANSACTION_LENGTH + 1)));
+      fprintf(temp_pointer, "%s", *c);
+      c++;
    }
    
    fclose(temp_pointer);
@@ -417,18 +438,20 @@ int update_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
 
 
 
-int delete_transaction(int *number_of_transactions, char complete_budget[MAX_TRANSACTION_LENGTH + 1])
+int delete_transaction(int *number_of_transactions, char **budget)
 {
    FILE* temp_pointer;
    char id_string[MENU_INPUT_LENGTH + 1];
    char menu_string[MENU_INPUT_LENGTH + 1];
+   
+   char **p;
    
    BOOL valid_id = FALSE;
    BOOL valid_yes_no = FALSE;
    
    int i, id = 0;
    
-   /* (void) read_transactions(number_of_transactions, complete_budget); */
+   (void) read_transactions(number_of_transactions, budget);
    
    do
    {
@@ -493,21 +516,25 @@ int delete_transaction(int *number_of_transactions, char complete_budget[MAX_TRA
          exit(EXIT_FAILURE);
       }
       
-      /* Remove the deleted transaction from the 2d array */
+      /* Remove the deleted transaction's pointer from array */
+      p = budget;
       for(i = 0; i < *number_of_transactions; i++)
       {
          if(i >= *number_of_transactions)
          {
-            strcpy(complete_budget + (i * (MAX_TRANSACTION_LENGTH + 1)), complete_budget + ((i + 1) * (MAX_TRANSACTION_LENGTH + 1)));
+            p = p + 1;
          }
+         
+         p++;
       }
       
-      /* Write the information to the file */
+      p = budget;
       for(i = 0; i < *number_of_transactions - 1; i++)
       {
-         fprintf(temp_pointer, "%s", complete_budget + (i * (MAX_TRANSACTION_LENGTH + 1)));
+         fprintf(temp_pointer, "%s", *p);
+         p++;
       }
-      
+   
       fclose(temp_pointer);
       remove(FILE_NAME);
       rename(TEMP_FILE_NAME, FILE_NAME);

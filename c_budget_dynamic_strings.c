@@ -108,6 +108,7 @@ int main(void)
       *c = p;
       
       c++;
+      
       number_of_transactions++;
    }
    
@@ -152,10 +153,8 @@ int main(void)
              */
             if(number_of_transactions < MAX_TRANSACTIONS)
             {
-               /*
                number_of_transactions = create_transaction(&number_of_transactions,
-                  *complete_budget);
-               */
+                  budget);
             }
             else
             {
@@ -178,10 +177,8 @@ int main(void)
             }
             else
             {
-               /*
                number_of_transactions =
-                  update_transaction(&number_of_transactions, *complete_budget);
-               */
+                  update_transaction(&number_of_transactions, budget);
             }
          }
          else if(menu_option_to_int == 4)
@@ -194,10 +191,8 @@ int main(void)
             }
             else
             {
-               /*
                number_of_transactions =
-                  delete_transaction(&number_of_transactions, *complete_budget);
-               */
+                  delete_transaction(&number_of_transactions, budget);
             }
          }
          else if(menu_option_to_int == 5)
