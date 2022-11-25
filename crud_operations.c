@@ -146,6 +146,7 @@ int create_transaction(int *number_of_transactions, char **budget)
    strcat(complete_transaction_string, "|");
    strcat(complete_transaction_string, description_string);
    strcat(complete_transaction_string, "|");
+   strcat(complete_transaction_string, "\n");
    
    /* Allocate memory for our new transaction */
    p = malloc(strlen(complete_transaction_string) + 1);
@@ -393,6 +394,7 @@ int update_transaction(int *number_of_transactions, char **budget)
    strcat(complete_transaction_string, "|");
    strcat(complete_transaction_string, description_string);
    strcat(complete_transaction_string, "|");
+   strcat(complete_transaction_string, "\n");
    
    /* Allocate memory for our new transaction */
    p = malloc(strlen(complete_transaction_string) + 1);
@@ -517,14 +519,13 @@ int delete_transaction(int *number_of_transactions, char **budget)
       }
       
       /* Remove the deleted transaction's pointer from array */
-      p = budget;
       for(i = 0; i < *number_of_transactions; i++)
       {
-         if(i >= id = 1)
+         if(i >= id - 1)
          {
-            p = p + 1;
+            budget[i] = budget[i + 1];
          }
-         
+
          p++;
       }
       
