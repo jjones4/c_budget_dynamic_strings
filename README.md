@@ -22,4 +22,4 @@ I plan to use various data structures to improve c_budget. I am rebuilding c_bud
 
 Also, you can compile c_budget_dynamic_strings on Windows using the following command:
 
-- cl -W4 c_budget_dynamic_strings c_budget_dynamic_strings.c c_budget_crud_operations.c c_budget_menus.c c_budget_read_input.c c_budget_validation.c -link -out:c_budget_dynamic_strings.exe
+- cl -W4 c_budget_dynamic_strings.c crud_operations.c menus.c read_input.c validation.c -link -out:c_budget_dynamic_strings.exe

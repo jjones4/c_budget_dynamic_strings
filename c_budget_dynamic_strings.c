@@ -30,10 +30,10 @@
  * Preprocessing directives
  *
  */
-#include "c_budget_menus.h"
-#include "c_budget_validation.h"
-#include "c_budget_read_input.h"
-#include "c_budget_crud_operations.h"
+#include "menus.h"
+#include "validation.h"
+#include "read_input.h"
+#include "crud_operations.h"
 
 
 
